@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Prueba Tecnica</title>
+	<style>
+	body{
+		background-color: #FFF;
+	}
+	
+	div.marco{
+	  display: flex;
+	  flex-flow: wrap;
+	  justify-content: center;
+	}
+
+	div.galeria {
+	  margin: 5px;
+	  border: 1px solid #ccc;
+	  float: left;
+	  width: 200px;
+	}
+
+	div.galeria:hover {
+	  border: 1px solid #000;
+	}
+
+	div.galeria img {
+	  width: 100%;
+	  height: auto;
+	}
+
+	div.titulo {
+	  padding: 15px;
+	  text-align: left;
+	}
+	</style>
+</head>
+<body>
+	<div>
+		<h2>Prueba Tecnica: Busqueda de imagenes en GIPHY</h2>
+		<input type="text" id="palabrasBusqueda" name="palabrasBusqueda" placeholder="Intruducir el termino de la imagen a buscar" size="50">
+		<div class="marco" id="resultadoBusqueda"></div>
+	</div>
+	<script type="text/javascript">
+		var busqueda = document.getElementById("palabrasBusqueda");
+		busqueda.addEventListener("keyup", function(e){
+			document.getElementById("resultadoBusqueda").innerHTML = '';
+			var palabrasBusquedaTerm = busqueda.value;
+			fetch('https://api.giphy.com/v1/gifs/search?&q='+palabrasBusquedaTerm+'&limit=20&api_key=3mIxmBZUIIPyb8R69gtxaW8Hsh74dFKV')
+			.then((response) => {return response.json(); })
+			.then((resp => {
+				let arregloDatos = resp.data
+				let resultado = '';
+				arregloDatos.forEach((imgDato) => {
+					resultado += '<div class="galeria">';
+					resultado += '<a target="_black" href="'+imgDato.images.fixed_height_small_still.url+'">';
+					resultado += '<img src="'+imgDato.images.fixed_height_small_still.url+'" />';
+					resultado += '</a>';
+					resultado += '<div class="titulo" align="left">Titulo: '+imgDato.title+'<br />Fecha: '+imgDato.import_datetime+'<br />Usuario: '+imgDato.username+'<br /></div>';
+					resultado += '</div>';
+				});
+				document.getElementById('resultadoBusqueda').innerHTML = resultado;
+			}))
+			.catch(err => console.log(err));
+		});		
+	</script>
+</body>
+</html>
